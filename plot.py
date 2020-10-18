@@ -2,6 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 def f(x):
     return pow(2, -10 * x**2) + x**3
@@ -17,37 +18,57 @@ y = f(x)
 x2 = np.arange(x_point-0.1, x_point+0.1, 0.01)
 y2 = f(x2)
 
-figsize = (10, 5)
-cols = 3
-rows = 2
-
 graph_color = 'blue'
 
-axs = plt.figure(figsize=figsize, constrained_layout=True).subplots(rows, cols)
-axs[0][0].plot(x, y, color=graph_color)
-axs[0][0].set_title("Take an arbitrary function")
+fig2 = plt.figure()
 
-axs[0][1].plot(x, y, alpha=0)
-axs[0][1].plot(x2, y2, color=graph_color)
-axs[0][1].set_title("Its infinitely small fragment")
+def make_frame(label):
+    # ax = plt.axes(xlim=(-1, 4), ylim=(-2, 2), label=label)
+    ax = plt.axes(label=label)
+    ax.plot(x, y, alpha=0)
+    return ax
 
-axs[0][2].plot(x, y, alpha=0)
-axs[0][2].fill_between(x2, y2-width/2, y2+width/2, color=graph_color)
-axs[0][2].set_title("Topological transformation\nto have infinitely small width")
+ims = []
 
-axs[1][0].plot(x, y, alpha=0)
-axs[1][0].fill_between(x2, [f(x_point)-width/2 for t in x2], [f(x_point)+width/2 for t in x2], color=graph_color)
-axs[1][0].set_title("...does not differ of")
+ax = make_frame("Take an arbitrary function")
+ax.plot(x, y, color=graph_color)
+ax.set_title("Take an arbitrary function")
+ims.append((ax,))
 
-axs[1][1].plot(x, y, alpha=0)
+ax = make_frame("Its infinitely small fragment")
+ax.plot(x, y, alpha=0)
+ax.plot(x2, y2, color=graph_color)
+ax.set_title("Its infinitely small fragment")
+ims.append((ax,))
+
+ax = make_frame("Topological transformation\nto have infinitely small width")
+ax.plot(x, y, alpha=0)
+ax.fill_between(x2, y2-width/2, y2+width/2, color=graph_color)
+ax.set_title("Topological transformation\nto have infinitely small width")
+ims.append((ax,))
+
+ax = make_frame("...does not differ of")
+ax.plot(x, y, alpha=0)
+ax.fill_between(x2, [f(x_point)-width/2 for t in x2], [f(x_point)+width/2 for t in x2], color=graph_color)
+ax.set_title("...does not differ of")
+ims.append((ax,))
+
+ax = make_frame("Shift to infinitely many x positions")
+ax.plot(x, y, alpha=0)
 for i in range(6):
-    axs[1][1].fill_between(x2 + (i-4)*0.3, [f(x_point)-width/2 for t in x2], [f(x_point)+width/2 for t in x2], color=graph_color)
-axs[1][1].set_title("Shift to infinitely many x positions")
+    ax.fill_between(x2 + (i-4)*0.3, [f(x_point)-width/2 for t in x2], [f(x_point)+width/2 for t in x2], color=graph_color)
+ax.set_title("Shift to infinitely many x positions")
+ims.append((ax,))
 
-axs[1][2].plot(x, y, alpha=0)
+ax = make_frame("Its y limit point")
+ax.plot(x, y, alpha=0)
 for i in range(6):
-    axs[1][2].fill_between(x2 + (i-4)*0.3, [f(x_point)-width/2 for t in x2], [f(x_point)+width/2 for t in x2], color=graph_color)
-axs[1][2].plot(x, [f(x_point) for t in x], color='red')
-axs[1][2].set_title("Its y limit point")
+    ax.fill_between(x2 + (i-4)*0.3, [f(x_point)-width/2 for t in x2], [f(x_point)+width/2 for t in x2], color=graph_color)
+ax.plot(x, [f(x_point) for t in x], color='red')
+ax.set_title("Its y limit point")
+ims.append((ax,))
 
-plt.show()
+im_ani = animation.ArtistAnimation(fig2, ims, interval=1000, repeat_delay=0,
+                                   blit=True)
+im_ani.save('plot.mp4', metadata={'artist':'Victor Porton'})
+# plt.show()

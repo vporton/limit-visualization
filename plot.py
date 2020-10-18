@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+fig2 = plt.figure()
+
 def f(x):
     return pow(2, -10 * x**2) + x**3
 
@@ -19,8 +21,6 @@ x2 = np.arange(x_point-0.1, x_point+0.1, 0.01)
 y2 = f(x2)
 
 graph_color = 'blue'
-
-fig2 = plt.figure()
 
 def make_frame(label):
     # ax = plt.axes(xlim=(-1, 4), ylim=(-2, 2), label=label)
@@ -68,7 +68,11 @@ ax.plot(x, [f(x_point) for t in x], color='red')
 ax.set_title("Its y limit point")
 ims.append((ax,))
 
-im_ani = animation.ArtistAnimation(fig2, ims, interval=1000, repeat_delay=0,
-                                   blit=True)
-im_ani.save('plot.mp4', metadata={'artist':'Victor Porton'})
+ani = animation.ArtistAnimation(fig2, ims, interval=1000, repeat_delay=0, blit=True)
+
+# ani.save('plot.mp4', metadata={'artist':'Victor Porton'})
+# writer = animation.FFMpegWriter(
+#     fps=15, metadata={'artist':'Victor Porton'}, bitrate=1800)
+ani.save("plot.gif", writer="imagemagick")
+
 # plt.show()

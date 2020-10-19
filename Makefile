@@ -8,5 +8,4 @@ all: .image.hash
 
 .image.hash:
 	docker build -t limit-visualization .
-	HASH="`gvmkit-build limit-visualization --push | perl -ne 'print $$1 if /hash link (.*)/'`"
-	echo "$$HASH" > $@
+	gvmkit-build limit-visualization --push | perl -ne 'print $$1 if /hash link (.*)/' > $@

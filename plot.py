@@ -3,8 +3,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import os
 
-fig2 = plt.figure()
+fig = plt.figure()
 
 def f(x):
     return pow(2, -10 * x**2) + x**3
@@ -23,56 +24,55 @@ y2 = f(x2)
 graph_color = 'blue'
 
 def make_frame(label):
-    # ax = plt.axes(xlim=(-1, 4), ylim=(-2, 2), label=label)
     ax = plt.axes(label=label)
+    ax.set_title(label)
     ax.plot(x, y, alpha=0)
     return ax
+
+fileCounter = 0
+
+def fileName():
+    global fileCounter
+    result = "frame{}.png".format(fileCounter)
+    fileCounter += 1
+    return result
 
 ims = []
 
 ax = make_frame("Take an arbitrary function")
 ax.plot(x, y, color=graph_color)
-ax.set_title("Take an arbitrary function")
-ims.append((ax,))
+plt.savefig(fileName())
 
 ax = make_frame("Its infinitely small fragment")
 ax.plot(x, y, alpha=0)
 ax.plot(x2, y2, color=graph_color)
-ax.set_title("Its infinitely small fragment")
-ims.append((ax,))
+plt.savefig(fileName())
 
 ax = make_frame("Topological transformation\nto have infinitely small width")
 ax.plot(x, y, alpha=0)
 ax.fill_between(x2, y2-width/2, y2+width/2, color=graph_color)
-ax.set_title("Topological transformation\nto have infinitely small width")
-ims.append((ax,))
+plt.savefig(fileName())
 
 ax = make_frame("...does not differ of")
 ax.plot(x, y, alpha=0)
 ax.fill_between(x2, [f(x_point)-width/2 for t in x2], [f(x_point)+width/2 for t in x2], color=graph_color)
-ax.set_title("...does not differ of")
-ims.append((ax,))
+plt.savefig(fileName())
 
-ax = make_frame("Shift to infinitely many x positions")
+ax = make_frame("Shift to infinitely many x positions.\nThis set is the generalized limit")
 ax.plot(x, y, alpha=0)
 for i in range(6):
     ax.fill_between(x2 + (i-4)*0.3, [f(x_point)-width/2 for t in x2], [f(x_point)+width/2 for t in x2], color=graph_color)
-ax.set_title("Shift to infinitely many x positions")
-ims.append((ax,))
+plt.savefig(fileName())
 
-ax = make_frame("Its y limit point")
+ax = make_frame("Its y limit point is the customary limit")
 ax.plot(x, y, alpha=0)
 for i in range(6):
     ax.fill_between(x2 + (i-4)*0.3, [f(x_point)-width/2 for t in x2], [f(x_point)+width/2 for t in x2], color=graph_color)
 ax.plot(x, [f(x_point) for t in x], color='red')
-ax.set_title("Its y limit point")
-ims.append((ax,))
+plt.savefig(fileName())
 
-ani = animation.ArtistAnimation(fig2, ims, interval=1000, repeat_delay=0, blit=True)
+if os.system("convert -delay 200 -loop 0 frame*.png plot.gif"):
+    raise "Cannot execute `convert`."
 
-# ani.save('plot.mp4', metadata={'artist':'Victor Porton'})
-# writer = animation.FFMpegWriter(
-#     fps=15, metadata={'artist':'Victor Porton'}, bitrate=1800)
-ani.save("plot.gif", writer="imagemagick")
-
-# plt.show()
+if os.system("rm -f frame*.png"):
+    raise "Cannot remove temp files."

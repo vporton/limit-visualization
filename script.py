@@ -19,9 +19,10 @@ async def main(subnet_tag = "testnet"):
     )
 
     async def worker(ctx: WorkContext, tasks):
-        if len(tasks) < 2:
+        tasks2 = [t async for t in tasks]
+        if len(tasks2) < 2:
             raise "Need at least 2 tasks!"
-        async for i, task in enumerate(tasks):
+        async for i, task in enumerate(tasks2):
             frames = ['0', '1', '2'] if i == 0 else ['3', '4', '5']
             framesStr = ' '.join(frames)
             ctx.run("/bin/bash", "-c", f"cd /root && ./plot.py {framesStr} > log.txt 2>&1")

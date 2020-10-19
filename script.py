@@ -34,7 +34,7 @@ async def main(subnet_tag = "testnet"):
         ctx.log(f"frames created.")
 
     jobs: range = range(0, 1, 1)
-    init_overhead: timedelta = timedelta(minutes = 1)
+    init_overhead: timedelta = timedelta(minutes = 10)
     async with Engine(
         package = package,
         max_workers = 2,

@@ -10,8 +10,10 @@ from datetime import timedelta
 
 
 async def main(subnet_tag = "testnet"):
+    with open(".image.hash") as f:
+        hash = f.read()
     package = await vm.repo(
-        image_hash = "limit-visualization",
+        image_hash = hash,
         min_mem_gib = 0.5,
         min_storage_gib = 2.0,
     )

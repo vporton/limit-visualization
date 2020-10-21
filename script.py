@@ -40,7 +40,7 @@ async def main(subnet_tag = "testnet"):
         package = package,
         max_workers = 2,
         budget = 1000,
-        timeout = init_overhead + timedelta(minutes = 1),
+        timeout = init_overhead + timedelta(minutes = 100),
         subnet_tag = subnet_tag,
         event_emitter = log_summary(log_event_repr),
     ) as engine:

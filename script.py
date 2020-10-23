@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 import asyncio
+import utils
+import sys
 import os
 
 from yapapi.log import enable_default_logger, log_summary, log_event_repr # noqa
@@ -9,7 +11,7 @@ from yapapi.runner.ctx import WorkContext
 from datetime import timedelta
 
 
-async def main(subnet_tag = "testnet"):
+async def main(args):
     with open(".image.hash") as f:
         hash = f.read()
     package = await vm.repo(
@@ -41,7 +43,7 @@ async def main(subnet_tag = "testnet"):
         max_workers = 2,
         budget = 1000,
         timeout = init_overhead + timedelta(minutes = 100),
-        subnet_tag = subnet_tag,
+        subnet_tag = args.subnet_tag,
         event_emitter = log_summary(log_event_repr),
     ) as engine:
 
@@ -52,9 +54,16 @@ async def main(subnet_tag = "testnet"):
         raise "Cannot execute `convert`."
 
 
+parser = utils.build_parser("golemGraph")
+args = parser.parse_args()
+sys.stderr.write(
+    f"Using subnet: {utils.TEXT_COLOR_YELLOW}{args.subnet_tag}{utils.TEXT_COLOR_DEFAULT}\n"
+)
+
 enable_default_logger()
 loop = asyncio.get_event_loop()
-job = loop.create_task(main(subnet_tag = "devnet-alpha.2"))
+#job = loop.create_task(main(subnet_tag = "devnet-alpha.2"))
+job = loop.create_task(main(args))
 try:
     asyncio.get_event_loop().run_until_complete(job)
 except (Exception, KeyboardInterrupt) as e:

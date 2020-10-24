@@ -6,7 +6,7 @@ COPY plot.py .
 
 RUN apt update
 RUN apt -y install python3 python3-numpy python3-pip
-RUN pip3 install matplotlib@3.3.2
+RUN pip3 install matplotlib==3.3.2
 
 WORKDIR /golem/work
 

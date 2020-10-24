@@ -3,7 +3,7 @@
 .PHONY: all
 
 all: .image.hash
-#	yagna payment init -r
+	yagna payment init -r
 	./script.py
 
 .image.hash:

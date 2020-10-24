@@ -33,12 +33,10 @@ async def main(args):
         async for task in tasks:
             frames = [['0', '1', '2'], ['3', '4', '5']][task.data]
             framesStr = ' '.join(frames)
-            # ctx.run("/bin/bash", "-c", f"cd /root && ./plot.py {framesStr} > log.txt 2>&1")
-            ctx.run("/bin/bash", "-c", f"ls / > {GOLEM_WORKDIR}log.txt")
-            ctx.download_file(f"{GOLEM_WORKDIR}log.txt", f"log.txt")
-            # ctx.download_file(f"/bin/bash", f"log.bin")
-            # for frame in frames:
-            #     ctx.download_file(f"/root/frame{frame}.png", f"frame{frame}.png")
+            ctx.run("/bin/bash", "-c", f"cd {GOLEM_WORKDIR} && /root/plot.py {framesStr} > {GOLEM_WORKDIR}log.txt 2>&1")
+            for frame in frames:
+                ctx.download_file(f"{GOLEM_WORKDIR}log.txt", f"log{task.data}.txt")
+                ctx.download_file(f"{GOLEM_WORKDIR}frame{frame}.png", f"frame{frame}.png")
             yield ctx.commit()
             task.accept_task()
             tasks_count += 1

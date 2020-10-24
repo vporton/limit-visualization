@@ -131,3 +131,5 @@ dmypy.json
 *.gif
 *.gvmi
 *.hash
+*.png
+log*.txt

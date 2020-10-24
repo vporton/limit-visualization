@@ -82,6 +82,6 @@ def generate_frame(number):
 # if os.system("rm -f frame*.png"):
 #     raise "Cannot remove temp files."
 
-ids = (int(x) for i in sys.argv[1:])
+ids = (int(x) for x in sys.argv[1:])
 for id in ids:
     generate_frame(id)

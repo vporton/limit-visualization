@@ -13,7 +13,7 @@ from yapapi.runner import Engine, Task, vm
 from yapapi.runner.ctx import WorkContext
 
 def renderAnimation(ctx=None, tasks=None):
-    if os.system("convert -delay 200 -loop 0 continuous*.png continuous.gif"):
+    if os.system("convert -delay 200 -loop 0 discontinuous*.png discontinuous.gif"):
         raise "Cannot execute `convert`."
 
 GOLEM_WORKDIR = '/golem/work/'
@@ -31,12 +31,12 @@ async def main(args):
     async def worker(ctx: WorkContext, tasks):
         tasks_count = 0
         async for task in tasks:
-            frames = [['0', '1', '2'], ['3', '4', '5']][task.data]
+            frames = [['0', '1', '2'], ['3', '4']][task.data]
             framesStr = ' '.join(frames)
-            ctx.run("/bin/bash", "-c", f"cd {GOLEM_WORKDIR} && /root/plot.py {framesStr} > {GOLEM_WORKDIR}log.txt 2>&1")
+            ctx.run("/bin/bash", "-c", f"cd {GOLEM_WORKDIR} && /root/plot2.py {framesStr} > {GOLEM_WORKDIR}log.txt 2>&1")
             for frame in frames:
                 ctx.download_file(f"{GOLEM_WORKDIR}log.txt", f"log{task.data}.txt")
-                ctx.download_file(f"{GOLEM_WORKDIR}continuous{frame}.png", f"continuous{frame}.png")
+                ctx.download_file(f"{GOLEM_WORKDIR}discontinuous{frame}.png", f"discontinuous{frame}.png")
             yield ctx.commit()
             task.accept_task()
             tasks_count += 1

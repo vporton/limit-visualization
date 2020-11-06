@@ -31,7 +31,7 @@ def make_frame(label):
     return ax
 
 def fileName(number):
-    return "frame{}.png".format(number)
+    return "continuous{}.png".format(number)
 
 
 def generate_frame0():
